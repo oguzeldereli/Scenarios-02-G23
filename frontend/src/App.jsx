@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter } from 'react-router'
+import { BrowserRouter, Route, Routes } from 'react-router'
 import HomePage from './pages/HomePage'
 import MainLayout from './pages/Layouts/MainLayout'
 

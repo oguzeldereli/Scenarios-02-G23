@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import AuthLoader from "../../components/auth/AuthLoader";
 import { isAuthorized } from "../../common/auth/Auth";
+import { Outlet } from "react-router";
 
 
 export default function RestrictedLayout()
@@ -15,7 +16,7 @@ export default function RestrictedLayout()
 
     return (    
         <>
-        {isAuthenticated ? <Outlet /> : <AuthLoader />}
+        {isAuth ? <Outlet /> : <AuthLoader />}
         </>
     )
 }

@@ -31,9 +31,15 @@ export const MENU_BUTTON_FONT_DEFAULT = "Montserrat";
 export const MAIN_NAVBAR_GAP = "0.2rem";
 export const MAIN_NAVBAR_PADDING_ITEM = "0.8rem 1rem";
 export const MAIN_NAVBAR_FONT_DEFAULT = "Montserrat";
-export const NAVBAR_COLOR_BACKGROUND = "#c9d6de";
+export const NAVBAR_COLOR_BACKGROUND = "#d7dbde";
 export const NAVBAR_COLOR_BACKGROUND_HOVER = "#375157";
 export const NAVBAR_COLOR_BORDER = "#375157";
 
 // Sidebar
 export const SIDEBAR_COLOR_BACKGROUND = "#ebf0f2";
+
+// Corkboard
+export const CORKBOARD_TITLE_BODY_FONT = "Roboto";
+export const CORKBOARD_TITLE_DEFAULT_FONT = "Montserrat";
+export const CORKBOARD_TITLE_COLOR_BORDER = "#4b57c4";
+export const CORKBOARD_TOOLBAR_DEFAULT_FONT = "Montserrat";

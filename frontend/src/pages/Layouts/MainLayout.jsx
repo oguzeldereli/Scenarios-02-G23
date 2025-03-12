@@ -6,6 +6,7 @@ import { Button, Link, MenuItem } from "react-aria-components";
 import SiteMenu from "../../components/navigation/SiteMenu";
 import SiteMenuItem from "../../components/navigation/SiteMenuItem";
 import { css } from "@emotion/react";
+import SiteSidebar from "../../components/navigation/SiteSidebar";
 
 export default function MainLayout()
 {
@@ -33,6 +34,8 @@ export default function MainLayout()
             </SiteMenu>
         </SiteNavbar>
         <MainContentContainer>
+            {/* TODO: Add content to sidebar */}
+            <SiteSidebar />
             <Outlet />
         </MainContentContainer>
         </>

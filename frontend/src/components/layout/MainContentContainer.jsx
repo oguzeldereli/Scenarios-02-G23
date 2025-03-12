@@ -13,6 +13,7 @@ export default function MainContentContainer({children})
         padding: 0;
         width: 100%;
         height: 100%;
+        display: flex;
     `;
 
     return (

@@ -1,18 +1,10 @@
 import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
-import {connectDB} from "./config/db.js";
 import Chapter from "./models/chapter.model.js";
 
-dotenv.config();
-const app = express();
-
-app.use(express.json()); // allows us to accept json data in the req.body
-app.use(cors());
+const router = express.Router();
 
 // create a new chapter
-app.post("/api/chapters", async (req, res) => {
+router.post("/api/chapters", async (req, res) => {
     const chapter = req.body; // user will send this data
 
     if (!chapter.title || !chapter.content) {
@@ -31,7 +23,7 @@ app.post("/api/chapters", async (req, res) => {
 });
 
 // update a chapter
-app.put("/api/chapters/:id", async (req, res) => {
+router.put("/api/chapters/:id", async (req, res) => {
     const {id} = req.params
     const chapter = req.body;
 
@@ -49,7 +41,7 @@ app.put("/api/chapters/:id", async (req, res) => {
 });
 
 // delete a chapter
-app.delete("/api/chapters/:id", async (req, res) => {
+router.delete("/api/chapters/:id", async (req, res) => {
     const {id} = req.params
 
     try {
@@ -62,7 +54,7 @@ app.delete("/api/chapters/:id", async (req, res) => {
 });
 
 // get all chapters
-app.get("/api/chapters", async (req, res) => {
+router.get("/api/chapters", async (req, res) => {
     try {
         const chapters = await Chapter.find({});
         res.status(200).json({success: true, data: chapters});
@@ -72,16 +64,4 @@ app.get("/api/chapters", async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    connectDB();
-    console.log(`Server running on port ${PORT}`);
-});
-
-
-
-
-// /home/projects
-// /home/projects/project1
-// /home/projects/project1/chapter1
-// /home/projects/project1/corkboard
+export default router;

@@ -1,10 +1,22 @@
 import express from "express";
-import Chapter from "./models/chapter.model.js";
+import mongoose from "mongoose";
+import Chapter from "../models/chapter.model.js";
 
 const router = express.Router();
 
+// get all chapters
+router.get("/", async (req, res) => {
+    try {
+        const chapters = await Chapter.find({});
+        res.status(200).json({success: true, data: chapters});
+    } catch (error) {
+        console.log("error in fetching chapters: ", error.message);
+        res.status(500).json({success: false, message: "server error"});
+    }
+});
+
 // create a new chapter
-router.post("/api/chapters", async (req, res) => {
+router.post("/", async (req, res) => {
     const chapter = req.body; // user will send this data
 
     if (!chapter.title || !chapter.content) {
@@ -23,7 +35,7 @@ router.post("/api/chapters", async (req, res) => {
 });
 
 // update a chapter
-router.put("/api/chapters/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     const {id} = req.params
     const chapter = req.body;
 
@@ -41,7 +53,7 @@ router.put("/api/chapters/:id", async (req, res) => {
 });
 
 // delete a chapter
-router.delete("/api/chapters/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     const {id} = req.params
 
     try {
@@ -50,17 +62,6 @@ router.delete("/api/chapters/:id", async (req, res) => {
     } catch (error) {
         console.log("error in deleting chapter: ", error.message);
         res.status(404).json({success: false, message: "chapter not found"});
-    }
-});
-
-// get all chapters
-router.get("/api/chapters", async (req, res) => {
-    try {
-        const chapters = await Chapter.find({});
-        res.status(200).json({success: true, data: chapters});
-    } catch (error) {
-        console.log("error in fetching chapters: ", error.message);
-        res.status(500).json({success: false, message: "server error"});
     }
 });
 

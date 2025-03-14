@@ -13,6 +13,10 @@ export default function CorkboardNote()
         border-radius: 3px;
         display: flex;
         flex-direction: column;
+
+        &:focus-within {
+            outline: 2px solid ${CORKBOARD_TITLE_COLOR_BORDER};
+        }
     `;
 
     const corkboardNoteTitle = css`

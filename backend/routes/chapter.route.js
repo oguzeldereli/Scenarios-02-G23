@@ -1,17 +1,16 @@
 import express from "express";
-import {createChapter, deleteChapter, getAllChapters, getChapter, updateChapter} from "../controllers/chapter.controller.js";
+import {
+    createChapter,
+    deleteChapter,
+    getChapter,
+    updateChapter
+} from "../controllers/chapter.controller.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-// get all chapters
-router.get("/", getAllChapters);
-// get a specific chapter
-router.get("/:id", getChapter);
-// create a new chapter
-router.post("/", createChapter);
-// update a chapter
-router.put("/:id", updateChapter);
-// delete a chapter
-router.delete("/:id", deleteChapter);
+router.post("/", createChapter); // create a new chapter inside a specific project
+router.get("/:chapterId", getChapter); // get a specific chapter
+router.put("/:chapterId", updateChapter); // update a chapter
+router.delete("/:chapterId", deleteChapter); // delete a chapter
 
 export default router;

@@ -9,6 +9,11 @@ const chaptersSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    project: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project", // Reference to the Project model
+        required: true,
+    },
 }, {
     timestamps: true //created at, updated at
 });

@@ -1,5 +1,6 @@
 import Project from "../models/project.model.js";
 import Chapter from "../models/chapter.model.js";
+import IndexCard from "../models/indexCard.model.js"
 import mongoose from "mongoose";
 
 export const getAllProjects = async (req, res) => {
@@ -69,8 +70,9 @@ export const deleteProject = async (req, res) => {
 
     try {
         await Chapter.deleteMany({project: projectId});
+        await IndexCard.deleteMany({project: projectId});
         await Project.findByIdAndDelete(projectId);
-        res.status(200).json({success: true, message: "project and all its chapters deleted"});
+        res.status(200).json({success: true, message: "project + chapters and corkboard deleted"});
     } catch (error) {
         console.log("error in deleting project: ", error.message);
         res.status(404).json({success: false, message: "project not found"});

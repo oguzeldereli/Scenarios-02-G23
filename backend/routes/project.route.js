@@ -13,6 +13,6 @@ router.get("/", getAllProjects); // get all projects
 router.get("/:projectId", getProject); // get a specific project + its chapter list
 router.post("/", createProject); // create a new project
 router.put("/:projectId", updateProject); // update a project
-router.delete("/:projectId", deleteProject); // delete a project + all its chapters
+router.delete("/:projectId", deleteProject); // delete a project + all its chapters + its corkboard
 
 export default router;

@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
 
 const projectsSchema = new mongoose.Schema({
-    title:{
-        type: String,
-        required: true
-    },
+    title:{type: String, required: true},
 }, {
     timestamps: true //created at, updated at
 });

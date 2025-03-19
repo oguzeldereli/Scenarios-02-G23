@@ -38,10 +38,13 @@ export default function Corkboard()
             padding: 0.5rem;
             cursor: pointer;
 
-            &:hover {
+            &:disabled {
+                cursor: default;
+            }
+
+            &:not(:disabled):hover {
                 background-color: ${NAVBAR_COLOR_BACKGROUND_HOVER};
                 color: ${COLOR_TEXT_LIGHT};
-
             }
         }
     `;

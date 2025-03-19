@@ -1,5 +1,5 @@
 import Project from "../models/project.model.js";
-import Chapter from "../models/chapter.model.js";
+import Document from "../models/document.model.js";
 import IndexCard from "../models/indexCard.model.js"
 import mongoose from "mongoose";
 
@@ -22,8 +22,8 @@ export const getProject = async (req, res) => {
             res.status(404).json({success: false, message: "project not found"});
         }
 
-        const chapters = await Chapter.find({project: projectId}).select("-content");
-        res.status(200).json({success: true, data: project, chapters});
+        const documents = await Document.find({project: projectId}).select("-content");
+        res.status(200).json({success: true, data: project, documents});
     } catch (error) {
         console.log("error in fetching project: ", error.message);
         res.status(500).json({success: false, message: "server error"});
@@ -69,10 +69,10 @@ export const deleteProject = async (req, res) => {
     const {projectId} = req.params
 
     try {
-        await Chapter.deleteMany({project: projectId});
+        await Document.deleteMany({project: projectId});
         await IndexCard.deleteMany({project: projectId});
         await Project.findByIdAndDelete(projectId);
-        res.status(200).json({success: true, message: "project + chapters and corkboard deleted"});
+        res.status(200).json({success: true, message: "project + documents and corkboard deleted"});
     } catch (error) {
         console.log("error in deleting project: ", error.message);
         res.status(404).json({success: false, message: "project not found"});

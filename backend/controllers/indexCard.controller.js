@@ -11,7 +11,7 @@ export const getAllIndexCards = async (req, res) => {
         }
         res.status(200).json({success: true, data: indexCards});
     } catch (error) {
-        console.log("error in fetching index chapters: ", error.message);
+        console.log("error in fetching index cards: ", error.message);
         res.status(500).json({success: false, message: "server error"});
     }
 }
@@ -30,7 +30,7 @@ export const getIndexCard = async (req, res) => {
 
 export const createIndexCard = async (req, res) => {
     const {projectId} = req.params;
-    const {title, content, position} = req.body;
+    const {title, content, colour, position} = req.body;
 
     console.log("Received projectId:", projectId);
 
@@ -48,7 +48,7 @@ export const createIndexCard = async (req, res) => {
             return res.status(400).json({ success: false, message: "Please provide all fields" });
         }
 
-        const newIndexCard = new IndexCard({ title, content, position, project: projectId });
+        const newIndexCard = new IndexCard({ title, content, colour, position, project: projectId });
         await newIndexCard.save();
 
         res.status(201).json({success: true, data: newIndexCard});

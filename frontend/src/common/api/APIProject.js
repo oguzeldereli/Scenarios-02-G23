@@ -1,6 +1,5 @@
 import { apiUnrestrictedClient } from "./APIClient";
 
-
 export async function getAllProjects()
 {
     const response = await apiUnrestrictedClient.get("projects");

@@ -1,6 +1,5 @@
 import { apiUnrestrictedClient } from "./APIClient";
 
-
 export async function getAllNotes(projectId)
 {
     const response = await apiUnrestrictedClient.get(`projects/${projectId}/notes`);

@@ -2,24 +2,118 @@
 import { Outlet } from "react-router";
 import MainContentContainer from "../../components/layout/MainContentContainer";
 import SiteNavbar from "../../components/navigation/SiteNavbar";
-import { Button, Link, MenuItem } from "react-aria-components";
+import { Button, Input, Label, Link, ListBox, ListBoxItem, MenuItem, TextField } from "react-aria-components";
 import SiteMenu from "../../components/navigation/SiteMenu";
 import SiteMenuItem from "../../components/navigation/SiteMenuItem";
 import { css } from "@emotion/react";
 import SiteSidebar from "../../components/navigation/SiteSidebar";
+import SiteMenuItemModal from "../../components/navigation/SiteMenuItemModal";
+import { COLOR_HOVER_LIGHT, NAVBAR_COLOR_BACKGROUND_HOVER } from "../../common/settings/settings";
+import { useState } from "react";
+import { createProject, deleteProject } from "../../common/api/APIProject"
 
-export default function MainLayout()
+export default function MainLayout({projects, setProjects, openProject, setOpenProject})
 {
-    /// TODO: add layout elements
+    const menuItemContainerCss = css`
+        padding: 0.6rem;
+        display: flex;
+        flex-direction: column;
+
+        & input {
+            border: 1px solid #101010;
+            padding: 0.4rem 0.6rem;
+        }
+
+        & button {
+            border: none;
+            color: white;
+            font-size: 1rem;
+            padding: 0.3rem 0.6rem;
+            margin-right: 0.3rem;
+            background-color: ${NAVBAR_COLOR_BACKGROUND_HOVER};
+
+            &:hover {
+                
+            }
+        }
+    `;
+
+    const projectListCss = css`
+        
+        .react-aria-ListBoxItem {
+            display: flex;
+            flex-direction: column;
+            font-family: "Montserrat", sans-serif;
+            font-size: 1rem;
+            padding: 0.2rem 0.3rem;
+            margin: 0;
+            cursor: pointer;
+            gap: 2px;
+
+            &:hover {
+                background-color: ${COLOR_HOVER_LIGHT};
+            }
+        }
+    `;
+
+    let [newProjectTitle, setNewProjectTitle] = useState('');
+
     return (
         <>
         <SiteNavbar>
             <SiteMenu label="File">
-                <SiteMenuItem onAction={() => alert('open')}>New Project</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Open Project</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Save</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Save as</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Export</SiteMenuItem>
+                <SiteMenuItemModal title="New Project">
+                    <div css={menuItemContainerCss}>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Add Project</div>
+                        <TextField css={css`margin: 0;`} placeholder="Enter Title..." value={newProjectTitle} onChange={(e) => setNewProjectTitle(e)}>
+                            <Input type="text" aria-label="Title Input" />
+                        </TextField>
+                        <div css={css`display: flex; padding-top: 0.3rem;`}>
+                            <Button onPress={async () => {var newProject = await createProject(newProjectTitle); setOpenProject(newProject);}}>Create</Button>
+                            <Button slot="close">Close</Button>
+                        </div>
+                    </div>
+                </SiteMenuItemModal>
+                <SiteMenuItemModal title="Open Project">
+                    <div css={menuItemContainerCss}>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Open Project</div>
+                        <ListBox items={projects} css={projectListCss}>
+                                {(item) => {
+                                    const date = new Date(item.updatedAt);
+                                    const readableUpdateDate = date.toLocaleString("en-US", {
+                                    weekday: "long",  
+                                    year: "numeric", 
+                                    month: "long",   
+                                    day: "numeric",   
+                                    hour: "numeric", 
+                                    minute: "numeric", 
+                                    second: "numeric",
+                                    hour12: true,
+                                    });
+
+                                    return (
+                                        <ListBoxItem id={item._id} onAction={() => setOpenProject(item)}>
+                                            <span css={css`font-size: 1rem;`}>{item.title}</span>
+                                            <span css={css`font-size: 0.6rem;`}>{readableUpdateDate}</span>
+                                        </ListBoxItem>
+                                    )
+                                }}
+                            </ListBox>
+                            <Button css={css`margin-top: 0.3rem;`} slot="close">Close</Button>
+                    </div>
+                </SiteMenuItemModal>
+                {openProject && 
+                <SiteMenuItemModal title="Delete Project">
+                    <div css={menuItemContainerCss}>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Delete Project</div>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1rem; `}>Are you sure you want to delete {openProject.title}?</div>
+                        <div css={css`display: flex;`}>
+                            <Button onPress={async () => {await deleteProject(openProject._id); setOpenProject(null);}}>Yes</Button>
+                            <Button slot="close">No</Button>
+                        </div>
+                    </div>
+                </SiteMenuItemModal>
+                }
             </SiteMenu>
             <SiteMenu label="Edit">
                 <SiteMenuItem onAction={() => alert('open')}>Undo</SiteMenuItem>
@@ -34,7 +128,6 @@ export default function MainLayout()
             </SiteMenu>
         </SiteNavbar>
         <MainContentContainer>
-            {/* TODO: Add content to sidebar */}
             <SiteSidebar />
             <Outlet />
         </MainContentContainer>

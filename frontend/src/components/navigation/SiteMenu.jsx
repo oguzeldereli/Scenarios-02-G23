@@ -28,6 +28,7 @@ export default function SiteMenu({label, children})
         background-color: white;
         box-sizing: border-box;
         outline: none;
+        z-index: 1000;
     `;
 
      return (

@@ -1,4 +1,5 @@
 import { getAuthToken } from "../auth/AuthTokenStore";
+import axios from 'axios';
 import { API_BASE_URL, API_TIMEOUT, AUTH_METHOD } from "../settings/settings";
 
 export const apiUnrestrictedClient = axios.create({

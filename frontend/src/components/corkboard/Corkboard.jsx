@@ -3,10 +3,16 @@ import { css } from "@emotion/react"
 import { Button, Group, Separator, Toolbar } from "react-aria-components";
 import CorkboardNote from "./CorkboardNote";
 import { COLOR_TEXT_LIGHT, CORKBOARD_TOOLBAR_DEFAULT_FONT, NAVBAR_COLOR_BACKGROUND, NAVBAR_COLOR_BACKGROUND_HOVER, NAVBAR_COLOR_BORDER } from "../../common/settings/settings";
-
+import { useEffect, useState } from "react";
 
 export default function Corkboard()
 {
+    let [notes, setNotes] = useState([]);
+
+    useEffect(() => {
+
+    }, []);
+
     const groupCss = css`
         height: 100%;
         width: 100%;
@@ -55,14 +61,14 @@ export default function Corkboard()
         flex-wrap: wrap;
         gap: 0.3rem;
     `;
-
+    
     return (
         <Group css={groupCss}>
             <Toolbar css={toolbarCss}>
                 <Button>New Note</Button>
                 <Separator orientation="vertical" />
-                <Button isDisabled="true">Color Tag</Button>
-                <Button isDisabled="true">Delete Note</Button>
+                <Button isDisabled={true}>Color Tag</Button>
+                <Button isDisabled={true}>Delete Note</Button>
             </Toolbar>
             <Group css={corkboardCss}>
                 <CorkboardNote />

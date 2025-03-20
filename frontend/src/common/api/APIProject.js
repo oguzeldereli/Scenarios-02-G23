@@ -3,13 +3,14 @@ import { apiUnrestrictedClient } from "./APIClient";
 export async function getAllProjects()
 {
     const response = await apiUnrestrictedClient.get("projects");
-    if(!response || !response.ok)
+    console.log(response);
+    if(!response)
     {
         console.log("An error occured while fetching projects.");
         return null;
     }
 
-    var {success, data} = await response.json();
+    var {success, data} = await response.data;
     if(!success)
     {
         console.log("An error occured while fetching projects.");
@@ -22,13 +23,13 @@ export async function getAllProjects()
 export async function getProject(id)
 {
     const response = await apiUnrestrictedClient.get(`projects/${id}`);
-    if(!response || !response.ok)
+    if(!response)
     {
         console.log("An error occured while fetching project.");
         return null;
     }
 
-    var {success, data} = await response.json();
+    var {success, data} = await response.data;
     if(!success)
     {
         console.log("An error occured while fetching project.");
@@ -41,13 +42,13 @@ export async function getProject(id)
 export async function createProject(title)
 {
     const response = await apiUnrestrictedClient.post(`projects`, {title: title});
-    if(!response || !response.ok)
+    if(!response)
     {
         console.log("An error occured while creating project.");
         return null;
     }
 
-    var {success, data} = await response.json();
+    var {success, data} = await response.data;
     if(!success)
     {
         console.log("An error occured while creating project.");
@@ -60,13 +61,13 @@ export async function createProject(title)
 export async function updateProject(id, project)
 {
     const response = await apiUnrestrictedClient.put(`projects/${id}`, {project: project});
-    if(!response || !response.ok)
+    if(!response)
     {
         console.log("An error occured while updating project.");
         return false;
     }
 
-    var {success} = await response.json();
+    var {success} = await response.data;
     if(!success)
     {
         console.log("An error occured while updating project.");
@@ -79,13 +80,13 @@ export async function updateProject(id, project)
 export async function deleteProject(id)
 {
     const response = await apiUnrestrictedClient.delete(`projects/${id}`);
-    if(!response || !response.ok)
+    if(!response)
     {
         console.log("An error occured while deleting project.");
         return false;
     }
 
-    var {success} = await response.json();
+    var {success} = await response.data;
     if(!success)
     {
         console.log("An error occured while deleting project.");

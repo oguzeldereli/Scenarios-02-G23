@@ -32,18 +32,18 @@ app.listen(PORT, () => {
 
 
 // "/api/projects/" = get all projects
-// "/api/projects/":projectId = get a specific project + its document list
+// "/api/projects/:projectId" = get a specific project + its document list
 // "/api/projects/" = create a new project
-// "/api/projects/":projectId = update a project
-// "/api/projects/":projectId = delete a project + all its documents + its corkboard
+// "/api/projects/:projectId" = update a project
+// "/api/projects/:projectId" = delete a project + all its documents + its corkboard
 
-// "/api/projects/":projectId/documents/ = create a new document inside a specific project
-// "/api/documents/:documentId" = get a specific document
-// "/api/documents/:documentId" = update a document
-// "/api/documents/:documentId" = delete a document
+// "/api/projects/:projectId/documents/" = create a new document inside a specific project
+// "/api/documents/:documentId/" = get a specific document
+// "/api/documents/:documentId/" = update a document
+// "/api/documents/:documentId/" = delete a document
 
-// "/api/projects/":projectId/indexCards/ = get all index cards from a specific project's corkboard
-// "/api/indexCards/:indexCardId" = get a specific index card
-// "/api/projects/":projectId/indexCards/ = create an index card in a specific project's corkboard
-// "/api/indexCards/:indexCardId" = update an index card
-// "/api/indexCards/:indexCardId" = delete an index card
+// "/api/projects/:projectId/indexCards/" = get all index cards from a specific project's corkboard
+// "/api/indexCards/:indexCardId/" = get a specific index card
+// "/api/projects/:projectId/indexCards/" = create an index card in a specific project's corkboard
+// "/api/indexCards/:indexCardId/" = update an index card
+// "/api/indexCards/:indexCardId/" = delete an index card

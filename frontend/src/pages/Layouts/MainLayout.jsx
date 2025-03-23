@@ -128,7 +128,7 @@ export default function MainLayout({projects, setProjects, openProject, setOpenP
             </SiteMenu>
         </SiteNavbar>
         <MainContentContainer>
-            <SiteSidebar />
+            <SiteSidebar openProject={openProject} />
             <Outlet />
         </MainContentContainer>
         </>

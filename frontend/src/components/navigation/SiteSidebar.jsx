@@ -2,6 +2,9 @@
 import { css } from "@emotion/react"
 import { NAVBAR_COLOR_BACKGROUND, NAVBAR_COLOR_BACKGROUND_HOVER, NAVBAR_COLOR_BORDER } from "../../common/settings/settings";
 import { Button, Tree, TreeItem, TreeItemContent } from "react-aria-components";
+import { useEffect, useState } from "react";
+import { getProject } from "../../common/api/APIProject";
+import { createDocument } from "../../common/api/APIDocument";
 
 function CustomTreeItemContent(props) {
     return (
@@ -33,8 +36,21 @@ function CustomTreeItemContent(props) {
     );
   }
 
-export default function SiteSidebar({children})
+export default function SiteSidebar({children, openProject})
 {
+    const [openProjectData, setOpenProjectData] = useState(null);  
+
+    useEffect(() => {
+        async function getOpenProjectData()
+        {
+            const data = await getProject(openProject._id);
+            console.log(data);
+            setOpenProjectData(data);
+        }
+
+        getOpenProjectData();
+    }, [openProject]);
+
     const sidebarCss = css`
         min-width: 200px;
         height: 100%;
@@ -106,27 +122,39 @@ export default function SiteSidebar({children})
 
     return (
         <div aria-label="sidebar" css={sidebarCss}>
+            {openProject && <div css={css`font-family: "Montserrat"; font-size: 1rem; font-weight: 400; padding: 0.3rem; border-bottom: 1px solid #0f0f0f;`}>{openProject.title}</div>}
             <Tree css={treeCss}
                 aria-label="Files"
                 selectionMode="none"
                 defaultSelectedKeys={['photos']}
                 >
                 <CustomTreeItem title="Scenes">
-                    <CustomTreeItem title="Scene1" />
+                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "scene").map(document => {
+                      return (
+                        <CustomTreeItem title={document.title} />
+                      )
+                  })}
                 </CustomTreeItem>
                 <CustomTreeItem title="Characters">
-                    <CustomTreeItem title="Character1" />
-                    <CustomTreeItem title="Character2" />
-                    <CustomTreeItem title="Character3" />
+                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "character").map(document => {
+                      return (
+                        <CustomTreeItem title={document.title} />
+                      )
+                  })}
                 </CustomTreeItem>
                 <CustomTreeItem title="Locations">
-                    <CustomTreeItem title="Location1" />
-                    <CustomTreeItem title="Location2" />
+                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "scene").map(document => {
+                      return (
+                        <CustomTreeItem title={document.title} />
+                      )
+                  })}
                 </CustomTreeItem>
                 <CustomTreeItem title="Research">
-                    <CustomTreeItem title="Research1" />
-                    <CustomTreeItem title="Research2" />
-                    <CustomTreeItem title="Research3" />
+                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "research").map(document => {
+                      return (
+                        <CustomTreeItem title={document.title} />
+                      )
+                  })}
                 </CustomTreeItem>
             </Tree>
         </div>

@@ -29,14 +29,14 @@ export async function getProject(id)
         return null;
     }
 
-    var {success, data} = await response.data;
+    var {success, data, documents} = await response.data;
     if(!success)
     {
         console.log("An error occured while fetching project.");
         return null;
     }
 
-    return data;
+    return {data, documents};
 }
 
 export async function createProject(title)

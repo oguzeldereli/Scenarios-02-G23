@@ -9,6 +9,8 @@ export default function App()
   
   const [openProject, setOpenProject] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [corkboardToggle, setCorkboardToggle] = useState(false);
+  const [darkModeOn, setTheme] = useState(false);
 
   useEffect(() => {
     async function getProjects()
@@ -24,8 +26,8 @@ export default function App()
     <>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MainLayout projects={projects} setProjects={setProjects} openProject={openProject} setOpenProject={setOpenProject}/>}>
-          <Route index element={<HomePage />} />
+        <Route path="/" element={<MainLayout projects={projects} setProjects={setProjects} openProject={openProject} setOpenProject={setOpenProject} setCorkboardToggle={setCorkboardToggle}/>}>
+          <Route index element={<HomePage corkboard={corkboardToggle} darkModeOn={darkModeOn} setTheme={setTheme}/>} />
         </Route>
       </Routes> 
     </BrowserRouter>

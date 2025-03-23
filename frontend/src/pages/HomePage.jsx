@@ -1,14 +1,13 @@
 import { useState } from "react";
 import Corkboard from "../components/corkboard/Corkboard";
-import TextEditor from "../components/textEditor/TextEditor";
+import Editor from "../components/textEditor/editor";
 
-export default function HomePage()
+export default function HomePage({corkboard, darkModeOn, setTheme})
 {
-
     return (
         <>
-            <Corkboard />
-            <TextEditor />
+            {corkboard && <Corkboard />}
+            {!corkboard && <Editor darkModeOn={darkModeOn} setTheme={setTheme}/>}
         </>
     )
 }

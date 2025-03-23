@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import JoditEditor from "jodit-react";
 import "./Editor.css";
+import { ToggleButton } from "react-aria-components";
 
-const Editor = () => {
+const Editor = ({darkModeOn, setTheme}) => {
   const editor = useRef(null);
-  const [darkModeOn, setTheme] = useState(false);
 
   useEffect(() => {
     if (darkModeOn) {
@@ -25,7 +25,7 @@ const Editor = () => {
   return (
     <div className="editor-wrapper">
       <div className="editor-header">
-        <button className="toggle-button" onClick={() => setTheme((prev) => !prev)}>
+        <button className={darkModeOn ? "toggle-button-dark" : "toggle-button"} onClick={() => setTheme((prev) => !prev)}>
           Focus Mode
         </button>
       </div>

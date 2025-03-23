@@ -22,15 +22,29 @@
 
 .toggle-button {
     padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
+    background-color: inherit;
+    font-family: "Montserrat";
+    color: black;
+    border: 1px solid #0f0f0f;
+    outline: none;
     cursor: pointer;
-    border-radius: 5px;
+    margin: 0.3rem; 
+}
+
+.toggle-button-dark {
+    padding: 8px 16px;
+    background-color: #375157;
+    font-family: "Montserrat";
+    color: white;
+    border: 1px solid #0f0f0f;
+    outline: none;
+    cursor: pointer;
+    margin: 0.3rem; 
 }
 
 .toggle-button:hover {
-    background-color: #0056b3;
+    background-color: #375157;
+    color: white;
 }
 
 .editor-container {

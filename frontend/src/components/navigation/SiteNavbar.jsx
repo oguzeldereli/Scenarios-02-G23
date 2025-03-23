@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react"
-import { MAIN_NAVBAR_FONT_DEFAULT, MAIN_NAVBAR_GAP, MAIN_NAVBAR_PADDING_ITEM, NAVBAR_COLOR_BACKGROUND, NAVBAR_COLOR_BACKGROUND_HOVER, NAVBAR_COLOR_BORDER, COLOR_TEXT_DARK, COLOR_TEXT_LIGHT, DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE } from "../../common/settings/settings";
+import { MAIN_NAVBAR_FONT_DEFAULT, MAIN_NAVBAR_GAP, MAIN_NAVBAR_PADDING_ITEM, NAVBAR_COLOR_BACKGROUND, NAVBAR_COLOR_BACKGROUND_HOVER, NAVBAR_COLOR_BORDER, COLOR_TEXT_DARK, COLOR_TEXT_LIGHT, DEFAULT_FONT_FAMILY, DEFAULT_FONT_SIZE, CORKBOARD_TITLE_COLOR_BORDER } from "../../common/settings/settings";
 import React from "react";
 
 export default function SiteNavbar({children})
@@ -34,6 +34,17 @@ export default function SiteNavbar({children})
                 background-color: ${NAVBAR_COLOR_BACKGROUND_HOVER};
                 color: ${COLOR_TEXT_LIGHT};
             }
+
+            &[data-selected]
+            {
+                background-color: ${CORKBOARD_TITLE_COLOR_BORDER};
+                color: ${COLOR_TEXT_LIGHT};
+            }
+
+            &[data-selected]:hover {
+                background-color: ${NAVBAR_COLOR_BACKGROUND_HOVER};
+                color: ${COLOR_TEXT_LIGHT};
+            }
         }
 
         & a {
@@ -57,9 +68,7 @@ export default function SiteNavbar({children})
     return (
         <nav css={mainNavbarCss}>
             <ul css={mainNavbarUlCss}>
-                {React.Children.map(children, (child, index) =>
-                    <li key={index}>{child}</li>
-                )}
+                {children}
             </ul>
         </nav>
     )

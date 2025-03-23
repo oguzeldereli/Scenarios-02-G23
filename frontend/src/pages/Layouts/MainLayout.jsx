@@ -2,7 +2,7 @@
 import { Outlet } from "react-router";
 import MainContentContainer from "../../components/layout/MainContentContainer";
 import SiteNavbar from "../../components/navigation/SiteNavbar";
-import { Button, Input, Label, Link, ListBox, ListBoxItem, MenuItem, TextField } from "react-aria-components";
+import { Button, Input, Label, Link, ListBox, ListBoxItem, MenuItem, TextField, ToggleButton } from "react-aria-components";
 import SiteMenu from "../../components/navigation/SiteMenu";
 import SiteMenuItem from "../../components/navigation/SiteMenuItem";
 import { css } from "@emotion/react";
@@ -11,8 +11,10 @@ import SiteMenuItemModal from "../../components/navigation/SiteMenuItemModal";
 import { COLOR_HOVER_LIGHT, NAVBAR_COLOR_BACKGROUND_HOVER } from "../../common/settings/settings";
 import { useState } from "react";
 import { createProject, deleteProject } from "../../common/api/APIProject"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' 
+import { faCoffee, faTh, faThLarge, faThList } from '@fortawesome/free-solid-svg-icons'
 
-export default function MainLayout({projects, setProjects, openProject, setOpenProject})
+export default function MainLayout({projects, setProjects, openProject, setOpenProject, setCorkboardToggle})
 {
     const menuItemContainerCss = css`
         padding: 0.6rem;
@@ -31,10 +33,6 @@ export default function MainLayout({projects, setProjects, openProject, setOpenP
             padding: 0.3rem 0.6rem;
             margin-right: 0.3rem;
             background-color: ${NAVBAR_COLOR_BACKGROUND_HOVER};
-
-            &:hover {
-                
-            }
         }
     `;
 
@@ -61,71 +59,78 @@ export default function MainLayout({projects, setProjects, openProject, setOpenP
     return (
         <>
         <SiteNavbar>
-            <SiteMenu label="File">
-                <SiteMenuItemModal title="New Project">
-                    <div css={menuItemContainerCss}>
-                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Add Project</div>
-                        <TextField css={css`margin: 0;`} placeholder="Enter Title..." value={newProjectTitle} onChange={(e) => setNewProjectTitle(e)}>
-                            <Input type="text" aria-label="Title Input" />
-                        </TextField>
-                        <div css={css`display: flex; padding-top: 0.3rem;`}>
-                            <Button onPress={async () => {var newProject = await createProject(newProjectTitle); setOpenProject(newProject);}}>Create</Button>
-                            <Button slot="close">Close</Button>
+            <li>
+                <SiteMenu label="File">
+                    <SiteMenuItemModal title="New Project">
+                        <div css={menuItemContainerCss}>
+                            <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Add Project</div>
+                            <TextField css={css`margin: 0;`} placeholder="Enter Title..." value={newProjectTitle} onChange={(e) => setNewProjectTitle(e)}>
+                                <Input type="text" aria-label="Title Input" />
+                            </TextField>
+                            <div css={css`display: flex; padding-top: 0.3rem;`}>
+                                <Button onPress={async () => {var newProject = await createProject(newProjectTitle); setOpenProject(newProject);}}>Create</Button>
+                                <Button slot="close">Close</Button>
+                            </div>
                         </div>
-                    </div>
-                </SiteMenuItemModal>
-                <SiteMenuItemModal title="Open Project">
-                    <div css={menuItemContainerCss}>
-                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Open Project</div>
-                        <ListBox items={projects} css={projectListCss}>
-                                {(item) => {
-                                    const date = new Date(item.updatedAt);
-                                    const readableUpdateDate = date.toLocaleString("en-US", {
-                                    weekday: "long",  
-                                    year: "numeric", 
-                                    month: "long",   
-                                    day: "numeric",   
-                                    hour: "numeric", 
-                                    minute: "numeric", 
-                                    second: "numeric",
-                                    hour12: true,
-                                    });
+                    </SiteMenuItemModal>
+                    <SiteMenuItemModal title="Open Project">
+                        <div css={menuItemContainerCss}>
+                            <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Open Project</div>
+                            <ListBox items={projects} css={projectListCss}>
+                                    {(item) => {
+                                        const date = new Date(item.updatedAt);
+                                        const readableUpdateDate = date.toLocaleString("en-US", {
+                                        weekday: "long",  
+                                        year: "numeric", 
+                                        month: "long",   
+                                        day: "numeric",   
+                                        hour: "numeric", 
+                                        minute: "numeric", 
+                                        second: "numeric",
+                                        hour12: true,
+                                        });
 
-                                    return (
-                                        <ListBoxItem id={item._id} onAction={() => setOpenProject(item)}>
-                                            <span css={css`font-size: 1rem;`}>{item.title}</span>
-                                            <span css={css`font-size: 0.6rem;`}>{readableUpdateDate}</span>
-                                        </ListBoxItem>
-                                    )
-                                }}
-                            </ListBox>
-                            <Button css={css`margin-top: 0.3rem;`} slot="close">Close</Button>
-                    </div>
-                </SiteMenuItemModal>
-                {openProject && 
-                <SiteMenuItemModal title="Delete Project">
-                    <div css={menuItemContainerCss}>
-                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Delete Project</div>
-                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1rem; `}>Are you sure you want to delete {openProject.title}?</div>
-                        <div css={css`display: flex;`}>
-                            <Button onPress={async () => {await deleteProject(openProject._id); setOpenProject(null);}}>Yes</Button>
-                            <Button slot="close">No</Button>
+                                        return (
+                                            <ListBoxItem id={item._id} onAction={() => setOpenProject(item)}>
+                                                <span css={css`font-size: 1rem;`}>{item.title}</span>
+                                                <span css={css`font-size: 0.6rem;`}>{readableUpdateDate}</span>
+                                            </ListBoxItem>
+                                        )
+                                    }}
+                                </ListBox>
+                                <Button css={css`margin-top: 0.3rem;`} slot="close">Close</Button>
                         </div>
-                    </div>
-                </SiteMenuItemModal>
-                }
-            </SiteMenu>
-            <SiteMenu label="Edit">
-                <SiteMenuItem onAction={() => alert('open')}>Undo</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Redo</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Cut</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Copy</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Paste</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Delete</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Delete All</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Select</SiteMenuItem>
-                <SiteMenuItem onAction={() => alert('open')}>Select All</SiteMenuItem>
-            </SiteMenu>
+                    </SiteMenuItemModal>
+                    {openProject && 
+                    <SiteMenuItemModal title="Delete Project">
+                        <div css={menuItemContainerCss}>
+                            <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Delete Project</div>
+                            <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1rem; `}>Are you sure you want to delete {openProject.title}?</div>
+                            <div css={css`display: flex;`}>
+                                <Button onPress={async () => {await deleteProject(openProject._id); setOpenProject(null);}}>Yes</Button>
+                                <Button slot="close">No</Button>
+                            </div>
+                        </div>
+                    </SiteMenuItemModal>
+                    }
+                </SiteMenu>
+            </li>
+            <li>
+                <SiteMenu label="Edit">
+                    <SiteMenuItem onAction={() => alert('open')}>Undo</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Redo</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Cut</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Copy</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Paste</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Delete</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Delete All</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Select</SiteMenuItem>
+                    <SiteMenuItem onAction={() => alert('open')}>Select All</SiteMenuItem>
+                </SiteMenu>
+            </li>
+            <li css={css`margin-left: auto;`}>
+                <ToggleButton onChange={e => setCorkboardToggle(e)}><FontAwesomeIcon icon={faThLarge} /></ToggleButton>
+            </li>
         </SiteNavbar>
         <MainContentContainer>
             <SiteSidebar openProject={openProject} />

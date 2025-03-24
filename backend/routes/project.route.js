@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.get("/", getAllProjects); // get all projects
-router.get("/:projectId", getProject); // get a specific project + its document list
+router.get("/:projectId", getProject); // get a specific project + its documents + its corkboard notes
 router.post("/", createProject); // create a new project
 router.put("/:projectId", updateProject); // update a project
 router.delete("/:projectId", deleteProject); // delete a project + all its documents + its corkboard

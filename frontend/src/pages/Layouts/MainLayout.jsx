@@ -14,7 +14,7 @@ import { createProject, deleteProject } from "../../common/api/APIProject"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' 
 import { faCoffee, faTh, faThLarge, faThList } from '@fortawesome/free-solid-svg-icons'
 
-export default function MainLayout({projects, setProjects, openProject, setOpenProject, setCorkboardToggle})
+export default function MainLayout({setOpenDocument, openProjectData, setOpenProjectData, projects, setProjects, openProject, setOpenProject, setCorkboardToggle})
 {
     const menuItemContainerCss = css`
         padding: 0.6rem;
@@ -113,6 +113,18 @@ export default function MainLayout({projects, setProjects, openProject, setOpenP
                         </div>
                     </SiteMenuItemModal>
                     }
+                    {openProject && 
+                    <SiteMenuItemModal title="Close Project">
+                        <div css={menuItemContainerCss}>
+                            <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Close Project</div>
+                            <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1rem; `}>Are you sure you want to close {openProject.title}?</div>
+                            <div css={css`display: flex;`}>
+                                <Button onPress={async () => {setOpenProjectData(null); setOpenProject(null); setOpenProject(null);}}>Yes</Button>
+                                <Button slot="close">No</Button>
+                            </div>
+                        </div>
+                    </SiteMenuItemModal>
+                    }
                 </SiteMenu>
             </li>
             <li>
@@ -133,7 +145,7 @@ export default function MainLayout({projects, setProjects, openProject, setOpenP
             </li>
         </SiteNavbar>
         <MainContentContainer>
-            <SiteSidebar openProject={openProject} />
+            <SiteSidebar setOpenDocument={setOpenDocument} setOpenProjectData={setOpenProjectData} openProjectData={openProjectData} openProject={openProject} />
             <Outlet />
         </MainContentContainer>
         </>

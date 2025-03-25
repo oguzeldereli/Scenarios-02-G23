@@ -8,7 +8,7 @@
     display: flex;
     flex-direction: column; /* Stack elements vertically */
     align-items: center;
-    width: 1000px; /* Set width of the editor */
+    width: 100%; /* Set width of the editor */
     margin-left: auto;
     margin-right: auto;
 }
@@ -48,5 +48,5 @@
 }
 
 .editor-container {
-    width: 1000px;
+    width: min(1000px, 100%);
 }

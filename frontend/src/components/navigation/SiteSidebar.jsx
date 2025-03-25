@@ -4,7 +4,7 @@ import { NAVBAR_COLOR_BACKGROUND, NAVBAR_COLOR_BACKGROUND_HOVER, NAVBAR_COLOR_BO
 import { Button, Tree, TreeItem, TreeItemContent } from "react-aria-components";
 import { useEffect, useState } from "react";
 import { getProject } from "../../common/api/APIProject";
-import { createDocument } from "../../common/api/APIDocument";
+import { createDocument, getDocument } from "../../common/api/APIDocument";
 
 function CustomTreeItemContent(props) {
     return (
@@ -27,7 +27,7 @@ function CustomTreeItemContent(props) {
 
   function CustomTreeItem(props) {
     return (
-      <TreeItem textValue={props.title} {...props}>
+      <TreeItem onAction={props.onAction} textValue={props.title} {...props}>
         <CustomTreeItemContent>
           {props.title}
         </CustomTreeItemContent>
@@ -36,20 +36,34 @@ function CustomTreeItemContent(props) {
     );
   }
 
-export default function SiteSidebar({children, openProject})
+export default function SiteSidebar({setOpenDocument, children, openProjectData, setOpenProjectData, openProject})
 {
-    const [openProjectData, setOpenProjectData] = useState(null);  
 
     useEffect(() => {
         async function getOpenProjectData()
         {
-            const data = await getProject(openProject._id);
-            console.log(data);
+            if(!openProject)
+            {
+              return;
+            }
+
+            const data = await getProject(openProject._id); 
             setOpenProjectData(data);
         }
 
         getOpenProjectData();
     }, [openProject]);
+
+    async function changeOpenDocument(id)
+    {
+        if(!openProject) 
+        {
+          return null;
+        }
+
+        var document = await getDocument(openProject._id, id);
+        setOpenDocument(document);
+    }
 
     const sidebarCss = css`
         min-width: 200px;
@@ -128,31 +142,31 @@ export default function SiteSidebar({children, openProject})
                 selectionMode="none"
                 defaultSelectedKeys={['photos']}
                 >
-                <CustomTreeItem title="Scenes">
+                <CustomTreeItem  title="Scenes">
                   {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "scene").map(document => {
                       return (
-                        <CustomTreeItem title={document.title} />
+                        <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )
                   })}
                 </CustomTreeItem>
                 <CustomTreeItem title="Characters">
                   {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "character").map(document => {
                       return (
-                        <CustomTreeItem title={document.title} />
+                        <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )
                   })}
                 </CustomTreeItem>
                 <CustomTreeItem title="Locations">
-                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "scene").map(document => {
+                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "location").map(document => {
                       return (
-                        <CustomTreeItem title={document.title} />
+                        <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )
                   })}
                 </CustomTreeItem>
                 <CustomTreeItem title="Research">
                   {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "research").map(document => {
                       return (
-                        <CustomTreeItem title={document.title} />
+                        <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )
                   })}
                 </CustomTreeItem>

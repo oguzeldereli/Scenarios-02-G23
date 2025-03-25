@@ -1,10 +1,40 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import JoditEditor from "jodit-react";
 import "./Editor.css";
 import { ToggleButton } from "react-aria-components";
+import { updateProject } from "../../common/api/APIProject";
+import { updateDocument } from "../../common/api/APIDocument";
 
-const Editor = ({darkModeOn, setTheme}) => {
+const Editor = ({openDocument, darkModeOn, setTheme, openProject, openProjectdata}) => {
   const editor = useRef(null);
+  const [value, setValue] = useState("");
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (openDocument && openProject) {
+      initialized.current = false;
+      setValue(openDocument.content);
+    }
+  }, [openDocument]);
+
+  useEffect(() => {
+    async function update() {
+      if (!openDocument || !openProject) {
+        return;
+      }
+
+      if(!initialized.current)
+      {
+        initialized.current = true;
+        return;
+      }
+  
+      const newDoc = { ...openDocument, content: value };
+      await updateDocument(openProject._id, openDocument._id, newDoc);
+    }
+  
+    update();
+  }, [value]);
 
   useEffect(() => {
     if (darkModeOn) {
@@ -14,13 +44,26 @@ const Editor = ({darkModeOn, setTheme}) => {
     }
   }, [darkModeOn]);
 
-  const config = {
-    width: "1000px",
-    height: "100vh",
+  const debounce = (callback, wait) => {
+    let timeoutId = null;
+    return (...args) => {
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => {
+        callback(...args);
+      }, wait);
+    };
+  }
+
+  const debounceSetValue = debounce(setValue, 300);
+
+  const config = useMemo(() => ({
+    width: "min(1000px, 100%)",
+    minHeight: "1000px",
+    height: "100%",
     theme: darkModeOn ? "dark" : "light",
-    toolbar: !darkModeOn, // Hide toolbar in dark mode
+    toolbar: !darkModeOn, // Hide toolbar in dark modeb
     showXPathInStatusbar: !darkModeOn, // Hide status bar in dark mode
-  };
+  }), [darkModeOn]);
 
   return (
     <div className="editor-wrapper">
@@ -30,7 +73,7 @@ const Editor = ({darkModeOn, setTheme}) => {
         </button>
       </div>
       <div className="editor-container">
-        <JoditEditor key={darkModeOn} ref={editor} config={config} />
+        <JoditEditor value={value} onChange={debounceSetValue} key={darkModeOn} ref={editor} config={config} />
       </div>
     </div>
   );

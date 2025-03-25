@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Button, Dialog, DialogTrigger, Heading, Modal, ModalOverlay, Pressable } from "react-aria-components";
+import { Button, Dialog, DialogTrigger, Heading, Modal, ModalOverlay, Pressable, useSlottedContext } from "react-aria-components";
 import SiteMenuItem from "./SiteMenuItem";
+import { useState } from "react";
 
 export default function SiteMenuItemModal({title, children})
 {
@@ -64,18 +65,18 @@ export default function SiteMenuItemModal({title, children})
         }
     `;
 
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <SiteMenuItem>
-            <DialogTrigger>
-                <Button>{title}</Button>
-                <ModalOverlay css={ModalOverlayCss}>
-                    <Modal isDismissable css={ModalCss}>
-                        <Dialog>
-                            {children}
-                        </Dialog>
-                    </Modal>
-                </ModalOverlay>
-            </DialogTrigger>
+            <Button onPress={() => setIsOpen(true)}>{title}</Button>
+            {isOpen && <ModalOverlay css={ModalOverlayCss} isDismissable>
+                <Modal isOpen={isOpen} onOpenChange={setIsOpen} css={ModalCss}>
+                    <Dialog>
+                        {children({isOpen, setIsOpen})}
+                    </Dialog>
+                </Modal>
+            </ModalOverlay>}
         </SiteMenuItem>
     )
 }

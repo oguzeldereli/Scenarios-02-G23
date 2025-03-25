@@ -29,14 +29,14 @@ export async function getProject(id)
         return null;
     }
 
-    var {success, data, documents} = await response.data;
+    var {success, data, documents, notes} = response.data;
     if(!success)
     {
         console.log("An error occured while fetching project.");
         return null;
     }
 
-    return {data, documents};
+    return {data, documents, notes};
 }
 
 export async function createProject(title)
@@ -48,14 +48,16 @@ export async function createProject(title)
         return null;
     }
 
-    var {success, data} = await response.data;
+    var {success, data} = response.data;
     if(!success)
     {
         console.log("An error occured while creating project.");
         return null;
     }
 
-    return data;
+    var project = getProject(data._id);
+
+    return project;
 }
 
 export async function updateProject(id, project)
@@ -67,7 +69,7 @@ export async function updateProject(id, project)
         return false;
     }
 
-    var {success} = await response.data;
+    var {success} = response.data;
     if(!success)
     {
         console.log("An error occured while updating project.");
@@ -86,7 +88,7 @@ export async function deleteProject(id)
         return false;
     }
 
-    var {success} = await response.data;
+    var {success} = response.data;
     if(!success)
     {
         console.log("An error occured while deleting project.");

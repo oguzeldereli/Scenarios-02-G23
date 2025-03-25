@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react"
 import { NAVBAR_COLOR_BACKGROUND, NAVBAR_COLOR_BACKGROUND_HOVER, NAVBAR_COLOR_BORDER } from "../../common/settings/settings";
-import { Button, Tree, TreeItem, TreeItemContent } from "react-aria-components";
+import { Button, DialogTrigger, Input, TextField, Tree, TreeItem, TreeItemContent } from "react-aria-components";
 import { useEffect, useState } from "react";
 import { getProject } from "../../common/api/APIProject";
 import { createDocument, getDocument } from "../../common/api/APIDocument";
+import SiteModal from "../common/SiteModal";
 
 function CustomTreeItemContent(props) {
     return (
@@ -25,35 +26,37 @@ function CustomTreeItemContent(props) {
     );
   }
 
-  function CustomTreeItem(props) {
+  function  CustomTreeItem(props) {
     return (
       <TreeItem onAction={props.onAction} textValue={props.title} {...props}>
         <CustomTreeItemContent>
-          {props.title}
+          <div css={css`display: flex; justify-content: space-between; align-items: center; width: 100%;`}>
+            {props.title}
+            {props.buttonAction && props.buttonText &&
+            <>
+            <Button onPress={props.buttonAction}>
+              {props.buttonText}
+            </Button>
+            </>
+            }
+            {props.modalView && props.modal !== undefined &&
+            <DialogTrigger>
+            <Button>
+              +
+            </Button>
+            <SiteModal>
+              {(mprops) => props.modal(mprops)}
+            </SiteModal>
+            </DialogTrigger>}
+          </div>
         </CustomTreeItemContent>
         {props.children}
       </TreeItem>
     );
   }
 
-export default function SiteSidebar({setOpenDocument, children, openProjectData, setOpenProjectData, openProject})
+export default function SiteSidebar({setOpenDocument, children, openProject, setOpenProject})
 {
-
-    useEffect(() => {
-        async function getOpenProjectData()
-        {
-            if(!openProject)
-            {
-              return;
-            }
-
-            const data = await getProject(openProject._id); 
-            setOpenProjectData(data);
-        }
-
-        getOpenProjectData();
-    }, [openProject]);
-
     async function changeOpenDocument(id)
     {
         if(!openProject) 
@@ -63,6 +66,13 @@ export default function SiteSidebar({setOpenDocument, children, openProjectData,
 
         var document = await getDocument(openProject._id, id);
         setOpenDocument(document);
+    }
+
+    async function openProjectWithData(id)
+    {
+        console.log(id);
+        const project = await getProject(id);
+        setOpenProject(project);
     }
 
     const sidebarCss = css`
@@ -134,37 +144,106 @@ export default function SiteSidebar({setOpenDocument, children, openProjectData,
         }
     `;
 
+    const modalContentCss = css`
+        padding: 0.6rem;
+        display: flex;
+        flex-direction: column;
+
+        & input {
+            border: 1px solid #101010;
+            padding: 0.4rem 0.6rem;
+        }
+
+        & button {
+            border: none;
+            color: white;
+            font-size: 1rem;
+            padding: 0.3rem 0.6rem;
+            margin-right: 0.3rem;
+            background-color: ${NAVBAR_COLOR_BACKGROUND_HOVER};
+        }
+    `;
+
+    const [sceneTitle, setSceneTitle] = useState("");
+    const [characterTitle, setCharacterTitle] = useState("");
+    const [locationTitle, setLocationTitle] = useState("");
+    const [researchTitle, setResearchTitle] = useState("");
+
     return (
         <div aria-label="sidebar" css={sidebarCss}>
-            {openProject && <div css={css`font-family: "Montserrat"; font-size: 1rem; font-weight: 400; padding: 0.3rem; border-bottom: 1px solid #0f0f0f;`}>{openProject.title}</div>}
+            {openProject && <div css={css`font-family: "Montserrat"; font-size: 1rem; font-weight: 400; padding: 0.3rem; border-bottom: 1px solid #0f0f0f; color: black;`}>{openProject.data.title}</div>}
             <Tree css={treeCss}
                 aria-label="Files"
                 selectionMode="none"
                 defaultSelectedKeys={['photos']}
                 >
-                <CustomTreeItem  title="Scenes">
-                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "scene").map(document => {
+                <CustomTreeItem title="Scenes" modalView={openProject} modal={({isOpen, setIsOpen}) => (
+                     <div css={modalContentCss}>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Add Scene</div>
+                        <TextField css={css`margin: 0;`} placeholder="Enter Title..." value={sceneTitle} onChange={setSceneTitle}>
+                            <Input type="text" aria-label="Title Input" />
+                        </TextField>
+                        <div css={css`display: flex; padding-top: 0.3rem;`}>
+                            <Button slot="close" onPress={async () => { setIsOpen(false); var newDocument = await createDocument(openProject.data._id, sceneTitle, " ", "scene"); await openProjectWithData(openProject.data._id); setOpenDocument(newDocument);}}>Create</Button>
+                            <Button slot="close">Close</Button>
+                        </div>
+                    </div>
+                  )}>
+                  {openProject && openProject.documents && openProject.documents.filter(document => document.type === "scene").map(document => {
                       return (
                         <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )
                   })}
                 </CustomTreeItem>
-                <CustomTreeItem title="Characters">
-                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "character").map(document => {
+                <CustomTreeItem title="Characters" modalView={openProject} modal={({isOpen, setIsOpen}) => (
+                     <div css={modalContentCss}>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Add Character</div>
+                        <TextField css={css`margin: 0;`} placeholder="Enter Title..." value={characterTitle} onChange={setCharacterTitle}>
+                            <Input type="text" aria-label="Title Input" />
+                        </TextField>
+                        <div css={css`display: flex; padding-top: 0.3rem;`}>
+                            <Button slot="close" onPress={async () => { setIsOpen(false); var newDocument = await createDocument(openProject.data._id, characterTitle, " ", "character"); await openProjectWithData(openProject.data._id); setOpenDocument(newDocument);}}>Create</Button>
+                            <Button slot="close">Close</Button>
+                        </div>
+                    </div>
+                  )}>
+                  {openProject && openProject.documents && openProject.documents.filter(document => document.type === "character").map(document => {
                       return (
                         <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )
                   })}
                 </CustomTreeItem>
-                <CustomTreeItem title="Locations">
-                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "location").map(document => {
+                <CustomTreeItem title="Locations" modalView={openProject} modal={({isOpen, setIsOpen}) => (
+                     <div css={modalContentCss}>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Add Location</div>
+                        <TextField css={css`margin: 0;`} placeholder="Enter Title..." value={locationTitle} onChange={setLocationTitle}>
+                            <Input type="text" aria-label="Title Input" />
+                        </TextField>
+                        <div css={css`display: flex; padding-top: 0.3rem;`}>
+                            <Button slot="close" onPress={async () => { setIsOpen(false); var newDocument = await createDocument(openProject.data._id, locationTitle, " ", "location"); await openProjectWithData(openProject.data._id); setOpenDocument(newDocument);}}>Create</Button>
+                            <Button slot="close">Close</Button>
+                        </div>
+                    </div>
+                  )}>
+                  {openProject && openProject.documents && openProject.documents.filter(document => document.type === "location").map(document => {
                       return (
                         <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )
                   })}
                 </CustomTreeItem>
-                <CustomTreeItem title="Research">
-                  {openProjectData && openProjectData.documents && openProjectData.documents.filter(document => document.type === "research").map(document => {
+                <CustomTreeItem title="Research" modalView={openProject} modal={({isOpen, setIsOpen}) => (
+                     <div css={modalContentCss}>
+                        <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Add Research</div>
+                        <TextField css={css`margin: 0;`} placeholder="Enter Title..." value={researchTitle} onChange={setResearchTitle}>
+                            <Input type="text" aria-label="Title Input" />
+                        </TextField>
+                        <div css={css`display: flex; padding-top: 0.3rem;`}>
+                            <Button slot="close" onPress={async () => { setIsOpen(false); var newDocument = await createDocument(openProject.data._id, researchTitle, " ", "research"); await openProjectWithData(openProject.data._id); setOpenDocument(newDocument);}}>Create</Button>
+                            <Button slot="close">Close</Button>
+                        </div>
+                    </div>
+                  )}>
+                  {openProject && openProject.documents && openProject.documents.filter(document => document.type === "research").map(document => {
                       return (
                         <CustomTreeItem key={"doc-" + document._id} onAction={() => changeOpenDocument(document._id)} title={document.title} />
                       )

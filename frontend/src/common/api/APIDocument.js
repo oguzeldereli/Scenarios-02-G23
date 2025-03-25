@@ -9,7 +9,7 @@ export async function getDocument(projectId, documentId)
         return null;
     }
 
-    var {success, data} = await response.data;
+    var {success, data} = response.data;
     if(!success)
     {
         console.log("An error occured while fetching document.");
@@ -28,7 +28,7 @@ export async function createDocument(projectId, title, content, type)
         return null;
     }
 
-    var {success, data} = await response.data;
+    var {success, data} = response.data;
     if(!success)
     {
         console.log("An error occured while creating document.");
@@ -47,7 +47,7 @@ export async function updateDocument(projectId, documentId, document)
         return false;
     }
 
-    var {success} = await response.data;
+    var {success} = response.data;
     if(!success)
     {
         console.log("An error occured while updating document.");
@@ -66,7 +66,7 @@ export async function deleteDocument(projectId, documentId)
         return false;
     }
 
-    var {success} = await response.data;
+    var {success} = response.data;
     if(!success)
     {
         console.log("An error occured while deleting document.");

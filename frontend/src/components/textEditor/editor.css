@@ -48,5 +48,6 @@
 }
 
 .editor-container {
-    width: min(1000px, 100%);
+    width: 100%;
+    max-width: 1000px;
 }

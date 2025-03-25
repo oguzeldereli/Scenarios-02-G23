@@ -32,7 +32,7 @@ app.listen(PORT, () => {
 
 
 // "/api/projects/" = get all projects
-// "/api/projects/:projectId" = get a specific project + its document list
+// "/api/projects/:projectId" = get a specific project + its documents + its corkboard notes
 // "/api/projects/" = create a new project
 // "/api/projects/:projectId" = update a project
 // "/api/projects/:projectId" = delete a project + all its documents + its corkboard

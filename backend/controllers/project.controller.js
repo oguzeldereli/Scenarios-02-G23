@@ -22,8 +22,9 @@ export const getProject = async (req, res) => {
             res.status(404).json({success: false, message: "project not found"});
         }
 
-        const documents = await Document.find({project: projectId}).select("-content");
-        res.status(200).json({success: true, data: project, documents});
+        const documents = await Document.find({project: projectId});
+        const notes = await IndexCard.find({project: projectId});
+        res.status(200).json({success: true, data: project, documents, notes});
     } catch (error) {
         console.log("error in fetching project: ", error.message);
         res.status(500).json({success: false, message: "server error"});

@@ -1,16 +1,27 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react"
-import { Button, Group, Separator, Toolbar } from "react-aria-components";
+import { Button, ColorSwatch, ColorSwatchPickerItem, Group, RadioGroup, Separator, Toolbar } from "react-aria-components";
 import CorkboardNote from "./CorkboardNote";
 import { COLOR_TEXT_LIGHT, CORKBOARD_TOOLBAR_DEFAULT_FONT, NAVBAR_COLOR_BACKGROUND, NAVBAR_COLOR_BACKGROUND_HOVER, NAVBAR_COLOR_BORDER } from "../../common/settings/settings";
 import { useEffect, useState } from "react";
+import { createNote, deleteNote, updateNote } from "../../common/api/APIIndexCards";
+import { getProject } from "../../common/api/APIProject";
+import { updateDocument } from "../../common/api/APIDocument";
+import SitePopover from "../common/SitePopover";
+import SiteColorSwatchPicker from "../common/SiteColorSwatchPicker";
 
-export default function Corkboard()
+export default function Corkboard({openProject, setOpenProject})
 {
-    let [notes, setNotes] = useState([]);
+    const [selectedNoteId, setSelectedNoteId] = useState("");
+
+    async function openProjectWithData(id)
+    {
+        const project = await getProject(id);
+        setOpenProject(project);
+    }
 
     useEffect(() => {
-
+        openProjectWithData(openProject.data._id);
     }, []);
 
     const groupCss = css`
@@ -61,22 +72,85 @@ export default function Corkboard()
         flex-wrap: wrap;
         gap: 0.3rem;
     `;
+
+    const [selectedColor, setSelectedColor] = useState(null);
+        
+
+    function compareFn(a, b) {
+        return a.position - b.position;
+    }
+
+    function rgbaToHex({ red, green, blue, alpha }) {
+        const alph = Math.round(alpha * 255);
+        return (
+          "#" +
+          [red, green, blue]
+            .map(x => x.toString(16).padStart(2, "0"))
+            .join("")
+        );
+      }
+
+      async function changeColor(value) {
+        const hex = rgbaToHex(value);
+        setSelectedColor(hex);
     
+        if (!selectedNoteId) {  
+            return;
+        }
+
+        await updateNote(selectedNoteId, { colour: hex });
+    
+        const newNote = {...openProject.notes.find(x => x._id === selectedNoteId)};
+        newNote.colour = hex;
+        console.log(newNote);
+        setOpenProject((project) => {
+            const updatedNotes = [
+                ...project.notes.filter(x => x._id !== selectedNoteId),
+                newNote
+            ].sort(compareFn);
+        
+            return {
+                ...project,
+                notes: updatedNotes
+            };
+        });
+    }
+
     return (
         <Group css={groupCss}>
             <Toolbar css={toolbarCss}>
-                <Button>New Note</Button>
+                <Button onPress={async () => {await createNote(openProject.data._id, " ", " ", "#ffffff", openProject.notes[openProject.notes.length - 1].position + 1 || 1); await openProjectWithData(openProject.data._id);}}>New Note</Button>
                 <Separator orientation="vertical" />
-                <Button isDisabled={true}>Color Tag</Button>
-                <Button isDisabled={true}>Delete Note</Button>
+                <SitePopover label="Color Tag" isDisabled={selectedNoteId === ""}>
+                    <SiteColorSwatchPicker value={selectedColor} onChange={changeColor}>
+                        <ColorSwatchPickerItem color="#fff">
+                            <ColorSwatch />
+                        </ColorSwatchPickerItem>
+                        <ColorSwatchPickerItem color="#A00">
+                            <ColorSwatch />
+                        </ColorSwatchPickerItem>
+                        <ColorSwatchPickerItem color="#f80">
+                            <ColorSwatch />
+                        </ColorSwatchPickerItem>
+                        <ColorSwatchPickerItem color="#080">
+                            <ColorSwatch />
+                        </ColorSwatchPickerItem>
+                        <ColorSwatchPickerItem color="#08f">
+                            <ColorSwatch />
+                        </ColorSwatchPickerItem>
+                        <ColorSwatchPickerItem color="#088">
+                            <ColorSwatch />
+                        </ColorSwatchPickerItem>
+                        <ColorSwatchPickerItem color="#008">
+                            <ColorSwatch />
+                        </ColorSwatchPickerItem>
+                    </SiteColorSwatchPicker>
+                </SitePopover>
+                <Button isDisabled={selectedNoteId === ""} onPress={async () => {await deleteNote(selectedNoteId); setOpenProject((project) => ({...project, notes: project.notes.filter(x => x._id !== selectedNoteId)}));}}>Delete Note</Button>
             </Toolbar>
-            <Group css={corkboardCss}>
-                <CorkboardNote />
-                <CorkboardNote />
-                <CorkboardNote />
-                <CorkboardNote />
-                <CorkboardNote />
-            </Group>
+            <RadioGroup css={corkboardCss} value={selectedNoteId} onChange={setSelectedNoteId}>
+                {openProject && openProject.notes && [...openProject.notes].sort(compareFn).map(note => <CorkboardNote setOpenProject={setOpenProject} openProject={openProject} key={note._id} note={note}/>)}
+            </RadioGroup>
         </Group>
     )
 }

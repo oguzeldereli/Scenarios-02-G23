@@ -58,7 +58,6 @@ export default function MainLayout({setOpenDocument, projects, setProjects, open
 
     async function openProjectWithData(id)
     {
-        console.log(id);
         const project = await getProject(id);
         setOpenProject(project);
     }

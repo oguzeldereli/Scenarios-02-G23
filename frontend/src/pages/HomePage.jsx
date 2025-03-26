@@ -8,7 +8,7 @@ export default function HomePage({setOpenDocument, setOpenProject, openDocument,
 {
     return (
         <>
-            {corkboard && openProject && <Corkboard />}
+            {corkboard && openProject && <Corkboard openProject={openProject} setOpenProject={setOpenProject} />}
             {corkboard && !openProject && <div css={css`margin: auto;`}>Open a Project to view corkboard</div>}
             {!corkboard && openDocument && <Editor setOpenProject={setOpenProject} setOpenDocument={setOpenDocument} openDocument={openDocument} openProject={openProject} darkModeOn={darkModeOn} setTheme={setTheme}/>}
             {!corkboard && !openDocument && 

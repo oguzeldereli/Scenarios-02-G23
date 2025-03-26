@@ -59,19 +59,29 @@ export const createIndexCard = async (req, res) => {
 };
 
 export const updateIndexCard = async (req, res) => {
-    const {indexCardId} = req.params
-    const indexCard = req.body;
+    const {indexCardId} = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(indexCardId)) {
         return res.status(404).json({success: false, message: "index card not found"});
     }
 
+    const { title, content, colour, position } = req.body;
+  
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (content !== undefined) updateData.content = content;
+    if (colour !== undefined) updateData.colour = colour;
+    if (position !== undefined) updateData.position = position;
+    
     try {
-        await IndexCard.findByIdAndUpdate(indexCardId, indexCard, {new:true});
-        res.status(200).json({success: true, message: "index card updated"});
+        const updatedCard = await IndexCard.findByIdAndUpdate(indexCardId, updateData, { new: true });
+        if (!updatedCard) {
+            return res.status(404).json({ success: false, message: "Index card not found" });
+        }
+        res.status(200).json({ success: true, message: "Index card updated", data: updatedCard });
     } catch (error) {
-        console.log("error in updating index card: ", error.message);
-        res.status(500).json({success: false, message: "server error"});
+        console.log("Error updating index card:", error.message);
+        res.status(500).json({ success: false, message: "Server error" });
     }
 }
 

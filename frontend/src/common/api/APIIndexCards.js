@@ -9,7 +9,7 @@ export async function getAllNotes(projectId)
         return null;
     }
 
-    var {success, data} = await response.data;
+    var {success, data} = response.data;
     if(!success)
     {
         console.log("An error occured while fetching notes.");
@@ -28,7 +28,7 @@ export async function getNote(projectId, noteId)
         return null;
     }
 
-    var {success, data} = await response.data;
+    var {success, data} = response.data;
     if(!success)
     {
         console.log("An error occured while fetching note.");
@@ -47,7 +47,7 @@ export async function createNote(projectId, title, content, colour, position)
         return null;
     }
 
-    var {success, data} = await response.data;
+    var {success, data} = response.data;
     if(!success)
     {
         console.log("An error occured while creating note.");
@@ -57,16 +57,17 @@ export async function createNote(projectId, title, content, colour, position)
     return data;
 }
 
-export async function updateNote(projectId, noteId, note)
+export async function updateNote(noteId, note)
 {
-    const response = await apiUnrestrictedClient.put(`projects/${projectId}/indexCards/${noteId}`, {note: note});
+    const response = await apiUnrestrictedClient.put(`indexCards/${noteId}`, {...note});
     if(!response)
     {
         console.log("An error occured while updating note.");
         return false;
     }
 
-    var {success} = await response.data;
+    var {success, message} = response.data;
+    console.log(message);
     if(!success)
     {
         console.log("An error occured while updating note.");
@@ -76,16 +77,16 @@ export async function updateNote(projectId, noteId, note)
     return true;
 }
 
-export async function deleteNote(projectId, noteId)
+export async function deleteNote(noteId)
 {
-    const response = await apiUnrestrictedClient.delete(`projects/${projectId}/indexCards/${noteId}`);
+    const response = await apiUnrestrictedClient.delete(`indexCards/${noteId}`);
     if(!response)
     {
         console.log("An error occured while deleting note.");
         return false;
     }
 
-    var {success} = await response.data;
+    var {success} = response.data;
     if(!success)
     {
         console.log("An error occured while deleting note.");

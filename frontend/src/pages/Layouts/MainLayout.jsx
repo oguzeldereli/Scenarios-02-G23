@@ -118,7 +118,7 @@ export default function MainLayout({setOpenDocument, projects, setProjects, open
                             <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1.5rem; font-weight: bold;`}>Delete Project</div>
                             <div css={css`font-family: "Montserrat", sans-serif; padding-bottom: 0.4rem; font-size: 1rem; `}>Are you sure you want to delete {openProject.title}?</div>
                             <div css={css`display: flex;`}>
-                                <Button onPress={async () => { setIsOpen(false); await deleteProject(openProject.data._id); setOpenProject(null);}}>Yes</Button>
+                                <Button onPress={async () => { setIsOpen(false); await deleteProject(openProject.data._id); setOpenProject(null); setOpenDocument(null)}}>Yes</Button>
                                 <Button slot="close">No</Button>
                             </div>  
                         </div>

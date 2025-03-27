@@ -119,7 +119,14 @@ export default function Corkboard({openProject, setOpenProject})
     return (
         <Group css={groupCss}>
             <Toolbar css={toolbarCss}>
-                <Button onPress={async () => {await createNote(openProject.data._id, " ", " ", "#ffffff", openProject.notes[openProject.notes.length - 1].position + 1 || 1); await openProjectWithData(openProject.data._id);}}>New Note</Button>
+                <Button
+                    onPress={async () => {
+                        const lastNote = openProject.notes.length > 0 ? openProject.notes[openProject.notes.length - 1] : null;
+                        const newPosition = lastNote ? lastNote.position + 1 : 1;
+
+                        await createNote(openProject.data._id, " ", " ", "#ffffff", newPosition);
+                        await openProjectWithData(openProject.data._id);
+                    }}>New Note</Button>
                 <Separator orientation="vertical" />
                 <SitePopover label="Color Tag" isDisabled={selectedNoteId === ""}>
                     <SiteColorSwatchPicker value={selectedColor} onChange={changeColor}>

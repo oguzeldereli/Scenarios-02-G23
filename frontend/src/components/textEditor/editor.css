@@ -17,8 +17,16 @@
     width: 100%;
     display: flex;
     justify-content: center; /* Center button horizontally */
+    align-items: center;
+    flex-wrap: wrap;
     margin-bottom: 10px; /* Space between button and editor */
 }
+
+.editor-header input {
+    padding: 0.446rem;
+    margin: 0.3rem; 
+    font-family: "Montserrat";
+}   
 
 .toggle-button {
     padding: 8px 16px;

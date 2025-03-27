@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import JoditEditor from "jodit-react";
 import "./Editor.css";
-import { ToggleButton } from "react-aria-components";
+import { Input, TextField, ToggleButton } from "react-aria-components";
 import { getProject, updateProject } from "../../common/api/APIProject";
 import { deleteDocument, updateDocument } from "../../common/api/APIDocument";
 
@@ -9,6 +9,7 @@ const Editor = ({setOpenDocument, openDocument, darkModeOn, setTheme, setOpenPro
   const editor = useRef(null);
   const [value, setValue] = useState("");
   const [placeholder, setPlaceholder] = useState("Start typing...");
+  const [documentName, setDocumentName] = useState(openDocument.title || "");
 
   async function openProjectWithData(id)
   {
@@ -47,6 +48,7 @@ const Editor = ({setOpenDocument, openDocument, darkModeOn, setTheme, setOpenPro
     }
 
     const newDoc = { ...openDocument, content: value };
+    setOpenDocument(newDoc);
     await updateDocument(openProject._id, openDocument._id, newDoc);
   }
 
@@ -54,6 +56,23 @@ const Editor = ({setOpenDocument, openDocument, darkModeOn, setTheme, setOpenPro
 
   const handleChange = async (value) => {
     await debounceUpdate(value);
+  }
+  
+  const handleTitleChange = async (value) => { 
+  if (!openDocument || !openProject) {
+    return;
+  }
+
+    const newDoc = { ...openDocument, title: value };
+    setOpenDocument(newDoc);
+    setOpenProject(project => ({
+      ...project,
+      documents: project.documents.map(doc =>
+        doc._id === openDocument._id ? newDoc : doc
+      )
+    }));
+    await updateDocument(openProject._id, openDocument._id, newDoc);
+      setDocumentName(value);
   }
 
   const config = useMemo(() => ({
@@ -69,6 +88,9 @@ const Editor = ({setOpenDocument, openDocument, darkModeOn, setTheme, setOpenPro
   return (
     <div className="editor-wrapper">
       <div className="editor-header">
+        <TextField value={documentName} onChange={handleTitleChange}>
+          <Input />
+        </TextField>
         <button className={darkModeOn ? "toggle-button-dark" : "toggle-button"} onClick={() => setTheme((prev) => !prev)}>
           Focus Mode
         </button>

@@ -1,0 +1,58 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif; 
+}
+
+h1, h2, h3 {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+}
+
+
+.plot-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.timelines {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 1px;
+}
+
+
+.chapters {
+    display: flex;
+    justify-content: center;
+    gap: 160px;
+    margin-left: 230px; 
+}
+
+.side-heading {
+    width: 150px;
+    text-align: left;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 80px;
+    margin-left: 50px;
+}
+
+.timeline-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 50px; 
+
+}
+
+.timeline-wrapper {
+    flex-grow: 1;
+}
